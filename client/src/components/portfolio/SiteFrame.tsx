@@ -15,7 +15,7 @@ export function SiteFrame({ children }: { children: ReactNode }) {
   const github = import.meta.env.VITE_GITHUB_URL as string | undefined;
   const linkedin = import.meta.env.VITE_LINKEDIN_URL as string | undefined;
   const whatsapp = import.meta.env.VITE_WHATSAPP_URL as string | undefined;
-  const portrait = "/images/img.png";
+  const portrait = "/images/img2.png";
   const isProjectDetail = /^\/projects\/[^/]+$/.test(location);
   const floatingWhatsAppAction = whatsapp && location !== "/contact" ? <FeedbackAction href={whatsapp} target="_blank" rel="noreferrer" className={`floating-whatsapp ${isProjectDetail ? "floating-whatsapp--above-project-dock" : ""} fixed bottom-6 right-5 z-[100] grid size-12 place-items-center rounded-full p-0 shadow-[0_14px_34px_rgba(0,0,0,.38)] lg:hidden`} aria-label="Let’s Talk on WhatsApp" data-testid="floating-whatsapp"><MessageCircle size={21} /></FeedbackAction> : null;
 
