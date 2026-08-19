@@ -1,9 +1,15 @@
 import nodemailer from "nodemailer";
 
+function envValue(name: string) {
+  const value = process.env[name]?.trim();
+  if (!value) return undefined;
+  return value.replace(/^(["'])(.*)\1$/, "$2").trim();
+}
+
 function gmailConfig() {
-  const recipient = process.env.CONTACT_RECIPIENT_EMAIL?.trim();
-  const appPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
-  const username = process.env.GMAIL_SMTP_USER?.trim() || recipient;
+  const recipient = envValue("CONTACT_RECIPIENT_EMAIL");
+  const appPassword = envValue("GMAIL_APP_PASSWORD")?.replace(/\s/g, "");
+  const username = envValue("GMAIL_SMTP_USER") || recipient;
 
   if (!recipient || !appPassword || !username) {
     throw new Error("Gmail delivery is not configured. Set CONTACT_RECIPIENT_EMAIL and GMAIL_APP_PASSWORD.");
@@ -36,4 +42,15 @@ export async function sendPortfolioContactEmail(input: { name: string; email: st
     subject: `Portfolio contact from ${input.name}`,
     text: `Name: ${input.name}\nEmail: ${input.email}\n\nMessage:\n${input.message}\n\nSubmitted: ${submittedAt}`,
   });
+}
+
+export function describeGmailError(error: unknown) {
+  if (!error || typeof error !== "object") return { name: "UnknownError" };
+  const smtpError = error as { name?: string; code?: string; responseCode?: number; command?: string };
+  return {
+    name: smtpError.name || "Error",
+    code: smtpError.code,
+    responseCode: smtpError.responseCode,
+    command: smtpError.command,
+  };
 }

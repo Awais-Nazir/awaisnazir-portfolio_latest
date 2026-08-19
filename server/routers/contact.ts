@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { sendPortfolioContactEmail } from "../gmail";
+import { describeGmailError, sendPortfolioContactEmail } from "../gmail";
 import { publicProcedure, router } from "../_core/trpc";
 
 const contactAttempts = new Map<string, { count: number; resetAt: number }>();
@@ -27,7 +27,7 @@ export const contactRouter = router({
     try {
       await sendPortfolioContactEmail(input);
     } catch (error) {
-      console.error("[Contact] Gmail delivery failed", error);
+      console.error("[Contact] Gmail delivery failed", describeGmailError(error));
       throw new TRPCError({
         code: "SERVICE_UNAVAILABLE",
         message: "The message could not be delivered at the moment. Please try again shortly.",
