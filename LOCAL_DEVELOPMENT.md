@@ -37,7 +37,8 @@ The table below identifies the values that matter for the current public portfol
 | Variable group | Needed locally | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET` | Yes, for live CMS content | Reads your existing projects, skills, and posts from Sanity. |
-| `CONTACT_RECIPIENT_EMAIL`, `GMAIL_SMTP_USER`, `GMAIL_APP_PASSWORD` | Yes, for working contact-form delivery | Sends contact messages through your own Gmail account. Use a Gmail **App Password**, not your normal password. |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_RECIPIENT_EMAIL` | Yes, for deployed contact-form delivery | Sends contact messages through Resend's HTTPS API. Use a verified sending domain, or Resend's onboarding sender during initial testing. |
+| `GMAIL_SMTP_USER`, `GMAIL_APP_PASSWORD` | Optional local fallback | Sends contact messages through Gmail SMTP locally. Use a Gmail **App Password**, not your normal password. |
 | `VITE_CONTACT_EMAIL`, `VITE_WHATSAPP_URL`, `VITE_GITHUB_URL`, `VITE_LINKEDIN_URL`, `VITE_CV_URL` | Recommended | Supplies public contact and social destinations. |
 | `JWT_SECRET`, `DATABASE_URL`, OAuth, and Forge variables | Optional for the current public site | They support template-level auth, database, or platform services. Leave them blank unless you intentionally run those capabilities locally. |
 

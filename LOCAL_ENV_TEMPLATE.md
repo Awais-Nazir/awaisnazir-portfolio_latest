@@ -16,7 +16,11 @@ VITE_CV_URL=https://example.com/your-cv.pdf
 NEXT_PUBLIC_SANITY_PROJECT_ID=your-sanity-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 
-# Contact form via Gmail SMTP — required only when sending form messages locally
+# Contact form via Resend HTTPS API — recommended for Render deployment
+RESEND_API_KEY=re_your-resend-api-key
+RESEND_FROM_EMAIL=Awais Nazir Portfolio <onboarding@resend.dev>
+
+# Gmail SMTP fallback — useful locally when RESEND_API_KEY is not set
 CONTACT_RECIPIENT_EMAIL=your-inbox@example.com
 GMAIL_SMTP_USER=your-gmail-address@gmail.com
 GMAIL_APP_PASSWORD=your-16-character-gmail-app-password
