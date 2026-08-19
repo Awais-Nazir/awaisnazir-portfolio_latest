@@ -1,0 +1,120 @@
+# Project TODO
+
+- [x] Initialize a fresh full-stack portfolio project for Awais Nazir.
+- [x] Establish Sanity read-only client configuration driven exclusively by environment variables.
+- [x] Configure the Nightfall dark-theme global tokens, typography, ambient gradient layers, and reduced-motion behavior.
+- [x] Build an always-visible responsive sticky navigation bar with exact Home, Projects, Skills, Blog, and Contact links plus a mobile hamburger menu.
+- [x] Build the Home hero with Awais Nazir’s name, professional title, short bio, and exact View Projects and Download CV CTAs.
+- [x] Build the four-card About Me layout and retain clearly identified temporary copy until final card copy is supplied.
+- [x] Build the homepage Projects section from featured Sanity records, limited to three ordered project cards.
+- [x] Build the homepage Skills section from Sanity records where showOnHome is true, including each skill note and a See all skills link.
+- [x] Add the hidden testimonials component without testimonials content or fabricated user feedback.
+- [x] Build a Projects index with search and tag/technology filtering over Sanity project data.
+- [x] Build project detail routes that render Portable Text, technology tags, architecture imagery, video, live URL, and GitHub visibility states.
+- [x] Build the Skills page with category grouping when categories are populated and an accessible flat-list fallback.
+- [x] Build the Blog index and blog detail routes, including native Portable Text posts and external article destinations.
+- [x] Implement the Contact section and Contact page with exact name, email, and message labels, client validation, successful submission feedback, and owner notification.
+- [x] Add canonical, Open Graph, Twitter, and other domain-facing metadata using awaisnazir.tech only.
+- [x] Add footer links for supplied email, WhatsApp, GitHub, LinkedIn, navigation, and copyright without inventing contact information.
+- [x] Add unit tests for Sanity data shaping, project filtering, and contact submission validation.
+- [x] Verify the site at desktop, tablet, and mobile breakpoints; resolve visual or console defects.
+- [x] Request and apply remaining real contact information, Sanity identifiers, final hero copy, About Me copy, CV file/link, and contact delivery configuration.
+- [x] Apply the supplied Sanity project/dataset and public contact/social configuration, then validate Sanity connectivity with a read-only query.
+- [x] Create a detached, rounded, glossy sticky navbar with a compact profile mark, complete Awais Nazir name, responsive mobile menu, and WhatsApp Let’s Talk action.
+- [x] Remove the location, education, and practice metadata strip beneath the hero section.
+- [x] Update hero copy to present Awais as a Software Engineer focused on Backend Systems.
+- [x] Replace the Current Focus card with the Endpoint Clients Backend Developer role from July 2026 to present, including the supplied technology context.
+- [x] Convert the hero signal row into an accessible interactive experience timeline for Endpoint Clients, OraDigitals, and the AICP remote Python internship.
+- [x] Add education content to About Me with a 3.51/4 GPA and June 2026 graduation date.
+- [x] Integrate the user-supplied profile photo into the Nightfall design with a mobile-safe information overlay and responsive sizing.
+- [x] Make every project card navigable to its detail route and add an image lightbox with Escape-key and close-button support.
+- [x] Point footer navigation to dedicated pages and display named contact/social links with appropriate icons.
+- [x] Configure direct Gmail delivery for contact messages to uetawais42@gmail.com without exposing credentials in the frontend.
+- [x] Apply the user-supplied favicon asset and upgrade the navbar brand from AN. to a profile image plus Awais Nazir wordmark.
+- [x] Add focused validation and responsive verification for the refined navigation, experience timeline, image overlay, project card, and contact delivery path.
+- [x] Reorder the experience timeline chronologically from 2024 through 2026 while retaining the 2026 Endpoint Clients role as the selected initial state.
+- [x] Rename the Current Focus card to Experience and update its content on every timeline selection.
+- [x] Expand the project-cover preview into a true viewport-level overlay and apply it consistently on the homepage and Projects index.
+- [x] Verify that the corrected Gmail credentials authenticate and that the contact form sends directly to uetawais42@gmail.com rather than the prior owner-notification channel.
+- [x] Apply the user-provided profile photograph and favicon after the assets are uploaded.
+- [x] Use the supplied high-contrast A logo asset for the website favicon, while using the requested portrait-and-name treatment in the navigation identity.
+- [x] Generate a Nightfall-consistent portrait enhancement that preserves Awais’s identity, glasses, hairstyle, pose, and natural expression.
+- [x] Add the enhanced portrait as a responsive About Me credibility element and compact navbar avatar without over-dominating the mobile layout.
+- [x] Deliver a detailed reusable prompt for future Nightfall-style portrait enhancement.
+- [x] Replace the native Nightfall programming animation fallback with the supplied Lottie source after a downloadable animation file is provided.
+- [x] Upload the supplied ProgrammingComputer.json to managed static storage and render it in the hero with a reliable reduced-motion fallback.
+- [x] Validate the supplied Lottie hero animation at desktop and mobile breakpoints, then update targeted test coverage.
+- [x] Rebuild About Me around smooth Education and Experience tabs while keeping a more explicit What I build content card.
+- [x] Present Education as concise, scan-friendly degree, institution, graduation, and GPA information.
+- [x] Present Experience as a latest-first tree with all role, company, period, scope, and technology details visible without additional selection.
+- [x] Remove the What I solve and How I work cards from the About Me layout.
+- [x] Center the portrait composition within its card and remove the portrait enlargement control and overlay.
+- [x] Add tests and responsive checks for the tabbed About Me panel and the hero animation fallback behavior.
+- [x] Remove the hero Lottie panel background and status text while retaining an accessible animation label.
+- [x] Standardize the About Me portrait card height across Education and Experience tabs, keeping Experience selected by default.
+- [x] Recompose the portrait crop so Awais’s face is visually centered within the About Me image frame.
+- [x] Add smooth, reduced-motion-safe transitions between Education and Experience tab content.
+- [x] Reduce mobile hero headline sizing and eliminate unused hero whitespace at narrow viewports.
+- [x] Audit and refine mobile section spacing, typography, and content rhythm across the entire home page.
+- [x] Add smooth anchor scrolling, polished mobile-menu open/close motion, and a minimal floating WhatsApp action offset from the bottom-right viewport edge.
+- [x] Add focused test coverage and desktop/mobile visual verification for the mobile UX refinement.
+- [x] Add a compact, accessible mobile filter drawer to the Projects page while retaining efficient desktop filtering.
+- [x] Adapt the reference WhatsApp action’s high-feedback hover and active interaction feel to portfolio buttons without copying external page assets or branding.
+- [x] Reset scroll position to the top when navigating to any internal portfolio route while preserving intentional same-page anchor navigation.
+- [x] Redesign the homepage Projects section with a distinct case-study-oriented composition.
+- [x] Redesign the homepage Skills section with a differentiated applied-engineering visual treatment.
+- [x] Redesign the homepage Blog section with a differentiated editorial reading-list composition.
+- [x] Add focused tests and desktop/mobile visual verification for navigation resets, the filter drawer, button interactions, and the differentiated homepage sections.
+- [x] Add focused automated coverage for WhatsApp-inspired button interaction classes and route scroll-reset behavior, including same-page anchor exceptions.
+- [x] Perform and record desktop/mobile visual and source-backed verification that internal routes open at the top, the mobile filter drawer is controlled open and closed, and button hover/active feedback responds as intended.
+- [x] Perform and record an interaction-driven route-reset check from a scrolled page to an internal destination.
+- [x] Perform and record an interaction-driven mobile Projects filter drawer open-and-close check.
+- [x] Perform and record rendered button hover and active feedback checks for the WhatsApp-inspired portfolio actions.
+- [x] Perform and record a scroll-offset internal navigation reset from Home to an internal page.
+- [x] Expose and test observable hover and press feedback state for WhatsApp-inspired portfolio buttons.
+- [x] Verify scroll reset through a rendered internal navigation-link interaction rather than only a simulated route transition.
+- [x] Extract the shared WhatsApp call-to-action into an observable interactive component and cover its hover and press feedback states.
+- [x] Hide the inactive mobile-menu control from desktop navigation while preserving the mobile menu trigger.
+- [x] Refine portfolio button hover states with an accessible animated accent-fill treatment inspired by the supplied blob-button reference.
+- [x] Restore the homepage Projects composition while preserving its current Nightfall background treatment.
+- [x] Replace homepage Skills sequence numbers with meaningful capability or technology icons and limit the preview to five skills.
+- [x] Keep the editorial Blog treatment while limiting the homepage preview to two posts.
+- [x] Enrich the dedicated Contact page with direct WhatsApp, email, LinkedIn, and GitHub contact paths alongside the form, then remove redundant home-page navigation if appropriate.
+- [x] Ensure the floating WhatsApp action is visible only at mobile breakpoints.
+- [x] Scope desktop hiding to the navbar mobile-menu trigger while retaining the desktop Projects clear-filters control.
+- [x] Add regression coverage for the desktop navbar-menu and Projects clear-filters visibility rules.
+- [x] Replace the linear button hover fill with a slower, bottom-to-top circular accent reveal that respects reduced-motion preferences.
+- [x] Smooth the Education and Experience content transition so it feels like a continuous panel change rather than an abrupt tab swap.
+- [x] Move the homepage Projects, Skills, and Blog all-content links below their preview content on mobile while retaining the desktop presentation.
+- [x] Remove secondary descriptive subheadings from the dedicated Projects, Skills, Blog, Contact, and detail pages and reduce excess top-page spacing.
+- [x] Document the source of the prior shared top-page spacing in the delivery summary.
+- [x] Add a Nightfall-themed custom scrollbar.
+- [x] Make each project cover image open its image lightbox on click, while non-image card areas retain detail-page navigation and live links indicate external navigation.
+- [x] Keep project detail Live Demo and GitHub links available through a sticky reading-side action area.
+- [x] Verify the final About Me markup applies the layered transition classes and add rendered coverage for the Education/Experience swap.
+- [x] Verify in code that Projects, Skills, Blog, and Contact remove redundant descriptive subheadings and use reduced top-page padding.
+- [x] Restore a working mobile-only floating WhatsApp action on every non-Contact route.
+- [x] Keep desktop Projects search, tag selection, and clear-filters control aligned in a single row.
+- [x] Ensure navbar navigation uses dedicated route URLs rather than homepage hash anchors.
+- [x] Apply the homepage editorial Blog design language to the dedicated Blog listing page.
+- [x] Recompose project details with a retained left category badge, centered title and summary, sticky desktop actions, mobile-bottom actions, conditional Video action, and native-share/copy-link behavior.
+- [x] Add regression coverage for the scoped mobile action, routing, filter row, editorial Blog, and project-detail action behaviors.
+- [x] Center the project-detail title and summary on mobile as well as desktop while retaining the left badge and sticky action rail.
+- [x] Keep the mobile floating WhatsApp action fixed, right-aligned, and visible throughout every non-Contact route.
+- [x] Keep Project Links continuously accessible: sticky on the desktop reading rail and fixed at the bottom on mobile project-detail pages.
+- [x] Add regression coverage and responsive verification for persistent mobile WhatsApp and project-detail action controls.
+- [x] Generate a 16:9 Nightfall-consistent project cover from the supplied architecture diagram for upload to Sanity.
+- [x] Create prompt-image.md with reusable, provider-neutral instructions for creating consistent Nightfall project covers from future source visuals.
+- [x] Validate and deliver the generated cover and reusable prompt guide.
+- [x] Confirm the generated Nightfall cover has finished and is no longer the temporary generation placeholder.
+- [x] Deliver the finished cover asset and prompt-image.md guide for the user’s Sanity upload workflow.
+- [x] Send the verified Nightfall cover asset and prompt guide to the user with concise Sanity upload instructions.
+- [x] Create a secret-free local environment template documenting the variables required for local portfolio development.
+- [x] Add concise LOCAL_DEVELOPMENT.md instructions for installing dependencies, configuring environment values, and running localhost.
+- [x] Validate the documented local startup command and provide the project checkpoint and user-controlled publish guidance.
+- [x] Start the documented local development server and confirm the application boots successfully on localhost.
+- [x] Save a checkpoint containing the local environment template and localhost documentation, then deliver the safe handoff and user-controlled publishing steps.
+- [x] Resolve the missing local server router import for `./routers/portfolio` without changing existing public portfolio behavior.
+- [x] Validate the corrected local router import with TypeScript and local startup checks, then document the user update path.
+- [x] Re-run the local development server after the router-module documentation update and confirm it boots successfully.
+- [x] Deliver the verified router-module recovery steps with the updated source checkpoint.
