@@ -1,5 +1,6 @@
 import { ArrowDownToLine, ArrowUpRight, Bot, Braces, CloudCog, Database, Radio, Terminal } from "lucide-react";
-import React, { useState } from "react";
+// import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { ContentNotice, ProjectCard, SectionHeading } from "@/components/portfolio/PortfolioUI";
@@ -24,12 +25,61 @@ function SkillGlyph({ name, category }: { name: string; category?: string }) {
   return <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl border border-[#f0c276]/25 bg-[#f0c276]/[0.08] text-[#f0c276]"><Icon size={15} strokeWidth={1.7} /></span>;
 }
 
-function ExperiencePanel({ active }: { active: boolean }) {
-  return <div id="experience-panel" role="tabpanel" aria-labelledby="experience-tab" aria-hidden={!active} className={`about-panel-layer ${active ? "is-active" : ""}`}><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">Professional trajectory</p><ol className="relative mt-6 ml-2 space-y-7 border-l border-white/[0.12] pl-6">{[...experienceTimeline].reverse().map((item) => <li key={item.id} className="relative"><span className="absolute -left-[31px] top-1 grid size-[13px] place-items-center rounded-full border border-[#f0c276]/60 bg-[#17130f] shadow-[0_0_0_4px_rgba(23,19,15,1)]"><span className="size-1.5 rounded-full bg-[#f0c276]" /></span><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><h3 className="text-base font-medium text-[#f6f1e9]">{item.role}</h3><span className="font-mono text-[10px] text-[#f0c276]">{item.period}</span></div><p className="mt-1 text-sm text-[#f6f1e9]/66">{item.company}</p><p className="mt-3 text-sm leading-6 text-[#f6f1e9]/55">{item.summary}</p><div className="mt-3 flex flex-wrap gap-1.5">{item.tools.map((tool) => <span key={tool} className="rounded-md border border-white/[0.09] bg-white/[0.035] px-2 py-1 font-mono text-[10px] text-[#f6f1e9]/62">{tool}</span>)}</div></li>)}</ol></div>;
-}
+const ExperiencePanel = React.forwardRef<HTMLDivElement, { active: boolean }>(
+  function ExperiencePanel({ active }, ref) {
+    return (
+      <div
+        ref={ref}
+        id="experience-panel"
+        role="tabpanel"
+        aria-labelledby="experience-tab"
+        aria-hidden={!active}
+        className={`about-panel-layer ${active ? "is-active" : ""}`}
+      >
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">Professional trajectory</p><ol className="relative mt-6 ml-2 space-y-7 border-l border-white/[0.12] pl-6">{[...experienceTimeline].reverse().map((item) => <li key={item.id} className="relative"><span className="absolute -left-[31px] top-1 grid size-[13px] place-items-center rounded-full border border-[#f0c276]/60 bg-[#17130f] shadow-[0_0_0_4px_rgba(23,19,15,1)]"><span className="size-1.5 rounded-full bg-[#f0c276]" /></span><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"><h3 className="text-base font-medium text-[#f6f1e9]">{item.role}</h3><span className="font-mono text-[10px] text-[#f0c276]">{item.period}</span></div><p className="mt-1 text-sm text-[#f6f1e9]/66">{item.company}</p><p className="mt-3 text-sm leading-6 text-[#f6f1e9]/55">{item.summary}</p><div className="mt-3 flex flex-wrap gap-1.5">{item.tools.map((tool) => <span key={tool} className="rounded-md border border-white/[0.09] bg-white/[0.035] px-2 py-1 font-mono text-[10px] text-[#f6f1e9]/62">{tool}</span>)}</div></li>)}</ol></div>);
+  })
 
-function EducationPanel({ active }: { active: boolean }) {
-  return <div id="education-panel" role="tabpanel" aria-labelledby="education-tab" aria-hidden={!active} className={`about-panel-layer ${active ? "is-active" : ""}`}><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">Academic foundation</p><h3 className="mt-4 text-xl font-medium tracking-[-0.03em] text-[#f6f1e9]">Software Engineering</h3><dl className="mt-5 divide-y divide-white/[0.08]">{educationRows.map(([label, value]) => <div key={label} className="grid gap-1 py-3 sm:grid-cols-[120px_1fr] sm:gap-4"><dt className="font-mono text-[10px] uppercase tracking-[0.13em] text-[#f0c276]/80">{label}</dt><dd className="text-sm leading-6 text-[#f6f1e9]/68">{value}</dd></div>)}</dl></div>;
+const EducationPanel = React.forwardRef<HTMLDivElement, { active: boolean }>(
+  function EducationPanel({ active }, ref) {
+    return (
+      <div
+        ref={ref}
+        id="education-panel"
+        role="tabpanel"
+        aria-labelledby="education-tab"
+        aria-hidden={!active}
+        className={`about-panel-layer ${active ? "is-active" : ""}`}
+      >
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">Academic foundation</p><h3 className="mt-4 text-xl font-medium tracking-[-0.03em] text-[#f6f1e9]">Software Engineering</h3><dl className="mt-5 divide-y divide-white/[0.08]">{educationRows.map(([label, value]) => <div key={label} className="grid gap-1 py-3 sm:grid-cols-[120px_1fr] sm:gap-4"><dt className="font-mono text-[10px] uppercase tracking-[0.13em] text-[#f0c276]/80">{label}</dt><dd className="text-sm leading-6 text-[#f6f1e9]/68">{value}</dd></div>)}</dl></div>);
+  })
+
+
+function AboutPanelShell({ aboutTab }: { aboutTab: AboutTabId }) {
+  const shellRef = useRef<HTMLDivElement>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
+  const educationRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | undefined>(undefined);
+
+  useLayoutEffect(() => {
+    const activeEl = aboutTab === "experience" ? experienceRef.current : educationRef.current;
+    const shellEl = shellRef.current;
+    if (activeEl && shellEl) {
+      const { paddingTop, paddingBottom } = getComputedStyle(shellEl);
+      const verticalPadding = parseFloat(paddingTop) + parseFloat(paddingBottom);
+      setHeight(activeEl.scrollHeight + verticalPadding);
+    }
+  }, [aboutTab]);
+
+  return (
+    <div
+      ref={shellRef}
+      className="about-panel-shell p-5 sm:p-6"
+      style={{ height, transition: "height 620ms cubic-bezier(0.23, 1, 0.32, 1)", overflow: "hidden" }}
+    >
+      <ExperiencePanel ref={experienceRef} active={aboutTab === "experience"} />
+      <EducationPanel ref={educationRef} active={aboutTab === "education"} />
+    </div>
+  );
 }
 
 function EditorialPost({ post, index }: { post: BlogPost; index: number }) {
@@ -48,7 +98,20 @@ export default function Home() {
   return <SiteFrame><main>
     <section id="home" className="container grid items-center gap-7 py-12 sm:gap-12 sm:py-20 lg:min-h-[calc(100svh-80px)] lg:grid-cols-[1.25fr_.75fr] lg:py-24"><div className="max-w-3xl"><p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#f0c276] sm:text-xs sm:tracking-[0.18em]">Muhammad Awais Nazir · Available for the right engineering challenge</p><h1 className="mt-5 text-[2.45rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#f6f1e9] sm:mt-6 sm:text-6xl lg:text-7xl">Software Engineer, focused on <span className="text-[#f0c276]">Backend Systems.</span></h1><p className="mt-6 max-w-2xl text-base leading-7 text-[#f6f1e9]/68 sm:mt-7 sm:text-lg sm:leading-8">I build dependable services and data foundations—designed for real product constraints, clear integration paths, and sustained delivery.</p><div className="mt-8 flex flex-wrap gap-3 sm:mt-9"><a href="#projects" className="button-primary">View Projects <ArrowUpRight size={16} /></a>{cvUrl ? <a href={cvUrl} className="button-secondary" target="_blank" rel="noreferrer">Download CV <ArrowDownToLine size={16} /></a> : <a href="#contact" className="button-secondary" aria-label="Download CV—contact Awais Nazir to request it">Download CV <ArrowDownToLine size={16} /></a>}</div></div><ProgrammingScene /></section>
 
-    <section className="container py-16 sm:py-24"><SectionHeading eyebrow="About Me" title="Engineering with the end system in mind." body="A concise view of the background, practical capabilities, and professional trajectory behind the portfolio." /><div className="mt-8 grid gap-4 sm:mt-10 lg:grid-cols-[0.74fr_1.26fr]"><figure className="surface-card relative h-[330px] overflow-hidden p-0 sm:h-[430px] lg:h-[530px]"><img src="/images/img2.png" alt="Awais Nazir" className="size-full object-cover" style={{ objectPosition: portraitObjectPosition }} /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0d0c0a]/95 via-[#0d0c0a]/45 to-transparent px-5 pb-5 pt-20 sm:px-6 sm:pb-6"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#f0c276]">Profile</p><figcaption className="mt-2 text-lg font-medium text-[#f6f1e9]">Awais Nazir</figcaption><p className="mt-1 text-sm text-[#f6f1e9]/62">Software Engineer · Backend Systems</p></div></figure><div className="space-y-4"><article className="surface-card p-5 sm:p-6"><p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#f0c276]">What I build</p><p className="mt-4 text-sm leading-7 text-[#f6f1e9]/68">I build backend APIs, data models, real-time services, integration workflows, email delivery systems, cloud-backed product features, and applied AI/RAG tools. The focus is reliable system behavior from data ingestion through deployment.</p></article><article className="surface-card overflow-hidden"><div className="flex border-b border-white/[0.08] p-2" role="tablist" aria-label="Education and experience">{aboutTabs.map((tab) => <button key={tab.id} id={`${tab.id}-tab`} type="button" role="tab" aria-selected={aboutTab === tab.id} aria-controls={tab.panelId} onClick={() => setAboutTab(tab.id)} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300 ${aboutTab === tab.id ? "bg-[#f0c276] text-[#20180e] shadow-sm" : "text-[#f6f1e9]/58 hover:text-[#f6f1e9]"}`}>{tab.label}</button>)}</div><div className="about-panel-shell p-5 sm:p-6"><ExperiencePanel active={aboutTab === "experience"} /><EducationPanel active={aboutTab === "education"} /></div></article></div></div></section>
+    <section className="container py-16 sm:py-24"><SectionHeading eyebrow="About Me" title="Engineering with the end system in mind." body="A concise view of the background, practical capabilities, and professional trajectory behind the portfolio." /><div className="mt-8 grid gap-4 sm:mt-10 lg:grid-cols-[0.74fr_1.26fr]"><figure className="surface-card relative h-[330px] overflow-hidden p-0 sm:h-[430px] lg:h-[530px]"><img src="/images/img2.png" alt="Awais Nazir" className="size-full object-cover" style={{ objectPosition: portraitObjectPosition }} /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0d0c0a]/95 via-[#0d0c0a]/45 to-transparent px-5 pb-5 pt-20 sm:px-6 sm:pb-6"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#f0c276]">Profile</p><figcaption className="mt-2 text-lg font-medium text-[#f6f1e9]">Awais Nazir</figcaption><p className="mt-1 text-sm text-[#f6f1e9]/62">Software Engineer · Backend Systems</p></div></figure><div className="space-y-4"><article className="surface-card p-5 sm:p-6"><p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#f0c276]">What I build</p><p className="mt-4 text-sm leading-7 text-[#f6f1e9]/68">I build backend APIs, data models, real-time services, integration workflows, email delivery systems, cloud-backed product features, and applied AI/RAG tools. The focus is reliable system behavior from data ingestion through deployment.</p></article>
+
+      <article className="surface-card overflow-hidden">
+        <div className="flex border-b border-white/[0.08] p-2" role="tablist" aria-label="Education and experience">
+          {aboutTabs.map((tab) =>
+            <button key={tab.id} id={`${tab.id}-tab`} type="button" role="tab" aria-selected={aboutTab === tab.id} aria-controls={tab.panelId} onClick={() => setAboutTab(tab.id)} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300 ${aboutTab === tab.id ? "bg-[#f0c276] text-[#20180e] shadow-sm" : "text-[#f6f1e9]/58 hover:text-[#f6f1e9]"}`}>{tab.label}
+            </button>)}
+        </div>
+
+        <AboutPanelShell aboutTab={aboutTab} />
+      </article>
+    </div>
+    </div>
+    </section>
 
     <section id="projects" className="relative overflow-hidden border-y border-white/[0.07] bg-[#0d1014]"><div className="nightfall-grid pointer-events-none absolute inset-0 opacity-35" aria-hidden="true" /><div className="container relative py-16 sm:py-24"><div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><SectionHeading eyebrow="Selected work" title="Systems worth opening up." body="A focused selection of projects shaped by real delivery constraints, architecture decisions, and dependable outcomes." /><Link href="/projects" className="button-secondary hidden shrink-0 sm:inline-flex">View all projects <ArrowUpRight size={16} /></Link></div><div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{isLoading ? Array.from({ length: 3 }).map((_, index) => <div key={index} className="h-[390px] animate-pulse rounded-2xl border border-white/[0.08] bg-white/[0.04]" />) : projects.length ? projects.slice(0, 3).map((project) => <ProjectCard key={project.slug} project={project} />) : <div className="md:col-span-2 xl:col-span-3"><ContentNotice type="featured projects" /></div>}</div><Link href="/projects" className="button-secondary mt-7 w-full sm:hidden">View all projects <ArrowUpRight size={16} /></Link></div></section>
 
