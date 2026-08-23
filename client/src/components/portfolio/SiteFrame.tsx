@@ -21,7 +21,7 @@ export function SiteFrame({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="relative min-h-screen overflow-x-hidden bg-[#100e0b] text-[#f6f1e9]">
+      <div className="relative min-h-screen overflow-x-clip bg-[#100e0b] text-[#f6f1e9]">
         <div className="pointer-events-none absolute inset-0 blur-[25px] md:blur-[36px]" style={{ background: "radial-gradient(85% 55% at 52% 0%, rgba(35,70,105,0.34) 0%, rgba(24,49,74,0.18) 38%, transparent 76%)", mixBlendMode: "screen" }} aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 blur-[25px] opacity-90 md:blur-[36px]" style={{ background: "linear-gradient(180deg, rgba(54,88,120,0.16) 0%, transparent 45%, rgba(0,0,0,0.18) 100%)", mixBlendMode: "soft-light" }} aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 blur-[25px] md:blur-[36px]" style={{ background: "radial-gradient(42% 35% at 78% 16%, rgba(96,130,155,0.16) 0%, transparent 78%)", mixBlendMode: "screen" }} aria-hidden="true" />

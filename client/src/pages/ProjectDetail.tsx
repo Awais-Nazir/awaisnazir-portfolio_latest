@@ -63,7 +63,7 @@ export default function ProjectDetail() {
             <div className="text-center sm:col-start-2"><h1 className="text-4xl font-semibold tracking-[-0.055em] text-[#f6f1e9] sm:text-6xl">{project.title}</h1>{project.summary && <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-[#f6f1e9]/64 sm:text-lg sm:leading-8">{project.summary}</p>}</div>
           </header>
           <div className="mt-10 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-            <aside className="hidden self-start lg:block"><div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#17130f]/88 p-4 backdrop-blur"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f0c276]">Project links</p><div className="mt-4"><ProjectActionLinks project={project} shareLabel={shareLabel} onShare={shareProject} /></div></div></aside>
+            <aside className="hidden lg:block"><div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#17130f]/88 p-4 backdrop-blur"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f0c276]">Project links</p><div className="mt-4"><ProjectActionLinks project={project} shareLabel={shareLabel} onShare={shareProject} /></div></div></aside>
             <div>
               {project.coverImageUrl && <img src={project.coverImageUrl} alt="" className="aspect-[16/8] w-full rounded-2xl border border-white/[0.10] object-cover" />}
               <div className="mt-12 grid gap-12">
