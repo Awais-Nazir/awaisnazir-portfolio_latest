@@ -20,6 +20,12 @@ export function SiteFrame({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
+  const isItemActive = (item: (typeof navItems)[number]) => {
+    const target = pageFor(item);
+    if (target === "/") return pathname === "/";
+    return pathname.startsWith(target);
+  };
+
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || process.env.VITE_CONTACT_EMAIL;
   const github = process.env.NEXT_PUBLIC_GITHUB_URL || process.env.VITE_GITHUB_URL;
   const linkedin = process.env.NEXT_PUBLIC_LINKEDIN_URL || process.env.VITE_LINKEDIN_URL;
@@ -88,15 +94,23 @@ export function SiteFrame({ children }: { children: ReactNode }) {
                 </span>
               </Link>
               <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary navigation">
-                {navItems.map((item) => (
-                  <Link
-                    key={item}
-                    href={pageFor(item)}
-                    className="text-sm text-[#f6f1e9]/70 transition-colors hover:text-[#f0c276]"
-                  >
-                    {item}
-                  </Link>
-                ))}
+                {navItems.map((item) => {
+                  const active = isItemActive(item);
+                  return (
+                    <Link
+                      key={item}
+                      href={pageFor(item)}
+                      className={`relative py-1 text-sm transition-colors duration-200 ${
+                        active ? "text-[#f0c276] font-medium" : "text-[#f6f1e9]/70 hover:text-[#f0c276]"
+                      }`}
+                    >
+                      {item}
+                      {active && (
+                        <span className="absolute inset-x-0 -bottom-1 h-[2px] bg-[#f0c276] rounded-full shadow-[0_0_8px_rgba(240,194,118,0.6)]" />
+                      )}
+                    </Link>
+                  );
+                })}
                 <FeedbackAction
                   href={whatsapp ?? "/contact"}
                   target={whatsapp ? "_blank" : undefined}
@@ -128,18 +142,28 @@ export function SiteFrame({ children }: { children: ReactNode }) {
                 aria-hidden={!menuOpen}
               >
                 <div className="rounded-2xl border border-white/[0.1] bg-[#17130f]/95 p-3 shadow-2xl backdrop-blur-2xl">
-                  <div className="flex flex-col">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item}
-                        href={pageFor(item)}
-                        tabIndex={menuOpen ? 0 : -1}
-                        onClick={() => setMenuOpen(false)}
-                        className="rounded-lg px-3 py-3 text-sm text-[#f6f1e9]/80 transition-colors hover:bg-white/[0.05] hover:text-[#f0c276]"
-                      >
-                        {item}
-                      </Link>
-                    ))}
+                  <div className="flex flex-col gap-1">
+                    {navItems.map((item) => {
+                      const active = isItemActive(item);
+                      return (
+                        <Link
+                          key={item}
+                          href={pageFor(item)}
+                          tabIndex={menuOpen ? 0 : -1}
+                          onClick={() => setMenuOpen(false)}
+                          className={`rounded-lg px-3 py-3 text-sm transition-colors flex items-center justify-between ${
+                            active
+                              ? "bg-white/[0.08] text-[#f0c276] font-medium"
+                              : "text-[#f6f1e9]/80 hover:bg-white/[0.05] hover:text-[#f0c276]"
+                          }`}
+                        >
+                          <span>{item}</span>
+                          {active && (
+                            <span className="size-1.5 rounded-full bg-[#f0c276] shadow-[0_0_6px_#f0c276]" />
+                          )}
+                        </Link>
+                      );
+                    })}
                     <FeedbackAction
                       href={whatsapp ?? "/contact"}
                       target={whatsapp ? "_blank" : undefined}
@@ -169,15 +193,20 @@ export function SiteFrame({ children }: { children: ReactNode }) {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#f6f1e9]/45">Navigate</p>
                 <div className="mt-4 flex flex-col gap-2.5">
-                  {navItems.map((item) => (
-                    <Link
-                      key={item}
-                      href={pageFor(item)}
-                      className="w-fit text-sm text-[#f6f1e9]/70 transition hover:text-[#f0c276]"
-                    >
-                      {item}
-                    </Link>
-                  ))}
+                  {navItems.map((item) => {
+                    const active = isItemActive(item);
+                    return (
+                      <Link
+                        key={item}
+                        href={pageFor(item)}
+                        className={`w-fit text-sm transition ${
+                          active ? "text-[#f0c276] font-medium" : "text-[#f6f1e9]/70 hover:text-[#f0c276]"
+                        }`}
+                      >
+                        {item}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               <div>
