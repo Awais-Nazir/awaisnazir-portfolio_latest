@@ -1,20 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/AppProviders";
 import { getPublicLinks } from "@/lib/publicLinks";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-manrope",
-});
-
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
-});
 
 export const viewport: Viewport = {
   themeColor: "#100e0b",
@@ -104,10 +91,7 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      className={`${manrope.variable} ${spaceMono.variable} dark`}
-    >
+    <html lang="en" className="dark">
       <head>
         <script
           type="application/ld+json"

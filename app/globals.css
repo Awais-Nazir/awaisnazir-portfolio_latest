@@ -31,6 +31,9 @@
 }
 
 :root {
+  --font-manrope: "Aptos", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-space-mono:
+    "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --radius: 0.9rem;
   --background: oklch(0.15 0.012 70);
   --foreground: oklch(0.95 0.012 80);
