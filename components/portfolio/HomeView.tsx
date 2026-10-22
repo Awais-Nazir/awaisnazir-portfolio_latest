@@ -1,174 +1,151 @@
-"use client";
-
-import { ArrowDownToLine, ArrowUpRight, Bot, Braces, CloudCog, Database, Radio, Terminal } from "lucide-react";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import {
+  ArrowUpRight,
+  Bot,
+  Cloud,
+  Database,
+  FileText,
+  Github,
+  GraduationCap,
+  Linkedin,
+} from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { ContactForm } from "@/components/portfolio/ContactForm";
-import { ContentNotice, ProjectCard, SectionHeading } from "@/components/portfolio/PortfolioUI";
-import { ProgrammingScene } from "@/components/portfolio/ProgrammingScene";
+import { ContentNotice } from "@/components/portfolio/PortfolioUI";
+import { ProjectShowcase } from "@/components/portfolio/ProjectShowcase";
+import { ExperienceTimeline } from "@/components/portfolio/ExperienceTimeline";
 import { SiteFrame } from "@/components/portfolio/SiteFrame";
-import { TestimonialsSection } from "@/components/portfolio/TestimonialsSection";
-import { AboutTabId, aboutTabs, defaultAboutTab, portraitObjectPosition } from "@/lib/homeInteractions";
 import type { BlogPost, Project, Skill } from "@/lib/portfolio";
-import { experienceTimeline } from "@/lib/portfolioInteractions";
+import { formatDate } from "@/lib/portfolio";
+import { displayTechnology } from "@/lib/editorial";
+import { initialExperience, universityUrl } from "@/lib/portfolioInteractions";
+import { getPublicLinks } from "@/lib/publicLinks";
 
-const educationRows = [
-  ["Degree", "Bachelor of Science in Software Engineering"],
-  ["Institution", "University of Engineering and Technology, Taxila"],
-  ["Graduated", "June 2026"],
-  ["CGPA", "3.51 / 4.00"],
-];
+const technologyIconSlugs: Record<string, string> = {
+  aws: "amazonaws",
+  docker: "docker",
+  fastapi: "fastapi",
+  gstreamer: "gstreamer",
+  nestjs: "nestjs",
+  "openai api": "openai",
+  openai: "openai",
+  postgresql: "postgresql",
+  python: "python",
+  webhooks: "socketdotio",
+  websockets: "socketdotio",
+};
 
-function SkillGlyph({ name, category }: { name: string; category?: string }) {
-  const source = `${name} ${category ?? ""}`.toLowerCase();
-  const Icon =
-    source.includes("database") || source.includes("postgres") || source.includes("sql")
-      ? Database
-      : source.includes("cloud") || source.includes("aws") || source.includes("deploy")
-      ? CloudCog
-      : source.includes("websocket") || source.includes("real") || source.includes("socket")
-      ? Radio
-      : source.includes("ai") || source.includes("rag") || source.includes("llm")
-      ? Bot
-      : source.includes("api") || source.includes("backend") || source.includes("nest")
-      ? Braces
-      : Terminal;
-  return (
-    <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl border border-[#f0c276]/25 bg-[#f0c276]/[0.08] text-[#f0c276]">
-      <Icon size={15} strokeWidth={1.7} />
-    </span>
-  );
+function technologyIconSlug(name: string) {
+  return technologyIconSlugs[displayTechnology(name).toLowerCase()];
 }
 
-const ExperiencePanel = React.forwardRef<HTMLDivElement, { active: boolean }>(
-  function ExperiencePanel({ active }, ref) {
-    return (
-      <div
-        ref={ref}
-        id="experience-panel"
-        role="tabpanel"
-        aria-labelledby="experience-tab"
-        aria-hidden={!active}
-        className={`about-panel-layer ${active ? "is-active" : ""}`}
-      >
-        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">
-          Professional trajectory
-        </p>
-        <ol className="relative mt-6 ml-2 space-y-7 border-l border-white/[0.12] pl-6">
-          {[...experienceTimeline].reverse().map((item) => (
-            <li key={item.id} className="relative">
-              <span className="absolute -left-[31px] top-1 grid size-[13px] place-items-center rounded-full border border-[#f0c276]/60 bg-[#17130f] shadow-[0_0_0_4px_rgba(23,19,15,1)]">
-                <span className="size-1.5 rounded-full bg-[#f0c276]" />
-              </span>
-              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 className="text-base font-medium text-[#f6f1e9]">{item.role}</h3>
-                <span className="font-mono text-[10px] text-[#f0c276]">{item.period}</span>
-              </div>
-              <p className="mt-1 text-sm text-[#f6f1e9]/66">{item.company}</p>
-              <p className="mt-3 text-sm leading-6 text-[#f6f1e9]/55">{item.summary}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {item.tools.map((tool) => (
-                  <span
-                    key={tool}
-                    className="rounded-md border border-white/[0.09] bg-white/[0.035] px-2 py-1 font-mono text-[10px] text-[#f6f1e9]/62"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    );
-  }
-);
-
-const EducationPanel = React.forwardRef<HTMLDivElement, { active: boolean }>(
-  function EducationPanel({ active }, ref) {
-    return (
-      <div
-        ref={ref}
-        id="education-panel"
-        role="tabpanel"
-        aria-labelledby="education-tab"
-        aria-hidden={!active}
-        className={`about-panel-layer ${active ? "is-active" : ""}`}
-      >
-        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6f1e9]/42">Academic foundation</p>
-        <h3 className="mt-4 text-xl font-medium tracking-[-0.03em] text-[#f6f1e9]">Software Engineering</h3>
-        <dl className="mt-5 divide-y divide-white/[0.08]">
-          {educationRows.map(([label, value]) => (
-            <div key={label} className="grid gap-1 py-3 sm:grid-cols-[120px_1fr] sm:gap-4">
-              <dt className="font-mono text-[10px] uppercase tracking-[0.13em] text-[#f0c276]/80">{label}</dt>
-              <dd className="text-sm leading-6 text-[#f6f1e9]/68">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    );
-  }
-);
-
-function AboutPanelShell({ aboutTab }: { aboutTab: AboutTabId }) {
-  const shellRef = useRef<HTMLDivElement>(null);
-  const experienceRef = useRef<HTMLDivElement>(null);
-  const educationRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | undefined>(undefined);
-
-  useLayoutEffect(() => {
-    const activeEl = aboutTab === "experience" ? experienceRef.current : educationRef.current;
-    const shellEl = shellRef.current;
-    if (activeEl && shellEl) {
-      const { paddingTop, paddingBottom } = getComputedStyle(shellEl);
-      const verticalPadding = parseFloat(paddingTop) + parseFloat(paddingBottom);
-      setHeight(activeEl.scrollHeight + verticalPadding);
-    }
-  }, [aboutTab]);
-
+function TechnologyMarquee({ rows }: { rows: Skill[][] }) {
   return (
-    <div
-      ref={shellRef}
-      className="about-panel-shell p-5 sm:p-6"
-      style={{ height, transition: "height 620ms cubic-bezier(0.23, 1, 0.32, 1)", overflow: "hidden" }}
-    >
-      <ExperiencePanel ref={experienceRef} active={aboutTab === "experience"} />
-      <EducationPanel ref={educationRef} active={aboutTab === "education"} />
+    <div className="capability-logo-cloud">
+      <span className="editorial-label">Technology stack</span>
+      <div className="capability-marquee" aria-label="Technology stack">
+        {rows.map((row, rowIndex) => (
+          <div
+            className={`capability-marquee-row ${rowIndex % 2 ? "is-reverse" : ""}`}
+            key={rowIndex}
+          >
+            <ul>
+              {Array.from({ length: 4 }, () => row)
+                .flat()
+                .map((skill, index) => {
+                  const name = displayTechnology(skill.name);
+                  const icon = technologyIconSlug(name);
+                  return (
+                    <li key={`${skill.name}-${index}`} title={name}>
+                      {icon ? (
+                        <img
+                          src={`https://cdn.simpleicons.org/${icon}/d7c7aa`}
+                          alt={index < row.length ? `${name} logo` : ""}
+                          aria-hidden={index >= row.length}
+                        />
+                      ) : (
+                        <span aria-hidden="true">{name.charAt(0)}</span>
+                      )}
+                      <span>{name}</span>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-function EditorialPost({ post, index }: { post: BlogPost; index: number }) {
-  const article = (
+function BlogStory({
+  post,
+  featured = false,
+}: {
+  post: BlogPost;
+  featured?: boolean;
+}) {
+  const story = (
     <article
-      className={`group border-t border-[#211b14]/20 py-6 transition hover:bg-[#211b14]/[0.045] sm:p-6 ${
-        index === 0 ? "lg:row-span-2 lg:py-8" : ""
-      }`}
+      className={`editorial-blog-story ${featured ? "is-featured" : ""}`}
     >
-      <div className="flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.14em] text-[#6c4d20]">
-        <span>
-          {post.publishDate
-            ? new Date(post.publishDate).toLocaleDateString("en", { month: "short", year: "numeric" })
-            : "Writing"}
-        </span>
-        <span>{post.readTime ?? "Article"}</span>
+      <div className="editorial-blog-image">
+        {post.coverImageUrl ? (
+          <>
+            <Image
+              src={post.coverImageUrl}
+              alt=""
+              aria-hidden="true"
+              fill
+              className="editorial-blog-image-backdrop"
+              sizes={
+                featured
+                  ? "(min-width: 1024px) 52vw, 100vw"
+                  : "(min-width: 1024px) 28vw, 100vw"
+              }
+            />
+            <Image
+              src={post.coverImageUrl}
+              alt=""
+              fill
+              className="editorial-blog-image-content"
+              sizes={
+                featured
+                  ? "(min-width: 1024px) 52vw, 100vw"
+                  : "(min-width: 1024px) 28vw, 100vw"
+              }
+            />
+          </>
+        ) : (
+          <FileText size={featured ? 34 : 24} aria-hidden="true" />
+        )}
       </div>
-      <h3 className={`mt-4 font-semibold tracking-[-0.04em] text-[#21170f] ${index === 0 ? "text-3xl sm:text-4xl" : "text-xl"}`}>
-        {post.title}
-      </h3>
-      {post.excerpt && <p className="mt-3 max-w-2xl text-sm leading-6 text-[#21170f]/68">{post.excerpt}</p>}
-      <div className="mt-5 flex items-center gap-2 text-sm font-medium text-[#6c4d20]">
-        Read article <ArrowUpRight size={15} />
+      <div className="editorial-blog-story-copy">
+        <div className="editorial-blog-story-meta">
+          <span>{formatDate(post.publishDate) || "Field note"}</span>
+          <span>{post.readTime || "Article"}</span>
+        </div>
+        <h3>{post.title}</h3>
+        {post.excerpt && <p>{post.excerpt}</p>}
+        <span className="editorial-blog-read">
+          Read article <ArrowUpRight size={15} aria-hidden="true" />
+        </span>
       </div>
     </article>
   );
+
   return post.externalUrl ? (
-    <a href={post.externalUrl} target="_blank" rel="noreferrer" className="block h-full">
-      {article}
+    <a
+      href={post.externalUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="editorial-blog-story-link"
+    >
+      {story}
     </a>
   ) : (
-    <Link href={`/blog/${post.slug}`} className="block h-full">
-      {article}
+    <Link href={`/blog/${post.slug}`} className="editorial-blog-story-link">
+      {story}
     </Link>
   );
 }
@@ -182,221 +159,290 @@ export function HomeView({
   skills: Skill[];
   blogPosts: BlogPost[];
 }) {
-  const cvUrl = process.env.NEXT_PUBLIC_CV_URL || process.env.VITE_CV_URL;
-  const [aboutTab, setAboutTab] = useState<AboutTabId>(defaultAboutTab);
-
+  const links = getPublicLinks();
+  const selectedProjects = projects.slice(0, 3);
+  const skillRows = [
+    skills.filter((_, index) => index % 2 === 0),
+    skills.filter((_, index) => index % 2 !== 0),
+  ].filter(row => row.length > 0);
   return (
     <SiteFrame>
-      <main>
-        <section
-          id="home"
-          className="container grid items-center gap-7 py-12 sm:gap-12 sm:py-20 lg:min-h-[calc(100svh-80px)] lg:grid-cols-[1.25fr_.75fr] lg:py-24"
-        >
-          <div className="max-w-3xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#f0c276] sm:text-xs sm:tracking-[0.18em]">
-              Muhammad Awais Nazir · Available for the right engineering challenge
-            </p>
-            <h1 className="mt-5 text-[2.45rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#f6f1e9] sm:mt-6 sm:text-6xl lg:text-7xl">
-              Software Engineer, focused on <span className="text-[#f0c276]">AI </span> &{" "}
-              <span className="text-[#f0c276]"> Backend.</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-[#f6f1e9]/68 sm:mt-7 sm:text-lg sm:leading-8">
-              I design backend systems and applied AI tools that hold up under real traffic: APIs, databases, RAG pipelines, and the infrastructure connecting them. I'm just as comfortable working across the stack when a project calls for it.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3 sm:mt-9">
-              <a href="#projects" className="button-primary">
-                View Projects <ArrowUpRight size={16} />
-              </a>
-              {cvUrl ? (
-                <a href={cvUrl} className="button-secondary" target="_blank" rel="noreferrer">
-                  Download CV <ArrowDownToLine size={16} />
-                </a>
-              ) : (
-                <a href="#contact" className="button-secondary" aria-label="Download CV—contact Awais Nazir to request it">
-                  Download CV <ArrowDownToLine size={16} />
-                </a>
-              )}
-            </div>
-          </div>
-          <ProgrammingScene />
-        </section>
-
-        <section className="container py-16 sm:py-24">
-          <SectionHeading
-            eyebrow="About Me"
-            title="I build for how systems behave."
-            body="Here's the short version: how I got here, what I actually work on, and where this is headed."
-          />
-          <div className="mt-8 grid gap-4 sm:mt-10 lg:grid-cols-[0.74fr_1.26fr]">
-            <figure className="surface-card relative h-[330px] overflow-hidden p-0 sm:h-[430px] lg:h-[530px]">
-              <img
+      <main className="editorial-home editorial-container" id="home">
+        <div className="editorial-opening">
+          <section className="editorial-intro" aria-labelledby="intro-heading">
+            <div className="editorial-person">
+              <Image
                 src="/images/img2.png"
                 alt="Awais Nazir"
-                className="size-full object-cover"
-                style={{ objectPosition: portraitObjectPosition }}
+                width={56}
+                height={56}
+                className="editorial-portrait"
+                priority
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0d0c0a]/95 via-[#0d0c0a]/45 to-transparent px-5 pb-5 pt-20 sm:px-6 sm:pb-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#f0c276]">Profile</p>
-                <figcaption className="mt-2 text-lg font-medium text-[#f6f1e9]">Awais Nazir</figcaption>
-                <p className="mt-1 text-sm text-[#f6f1e9]/62">Software Engineer · AI & Backend</p>
+              <div>
+                <p>Awais Nazir</p>
+                <span>Islamabad, Pakistan</span>
               </div>
-            </figure>
-            <div className="space-y-4">
-              <article className="surface-card p-5 sm:p-6">
-                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#f0c276]">What I build</p>
-                <p className="mt-4 text-sm leading-7 text-[#f6f1e9]/68">
-                  AI and backend are where most of my work lives: RAG pipelines, backend APIs, data models, and real-time services, along with the integrations that tie systems together. I've also built email delivery pipelines and cloud-backed features when a product needed them. The common thread is getting things to behave the same in production as they did on my machine.
-                </p>
-              </article>
-
-              <article className="surface-card overflow-hidden">
-                <div className="flex border-b border-white/[0.08] p-2" role="tablist" aria-label="Education and experience">
-                  {aboutTabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      id={`${tab.id}-tab`}
-                      type="button"
-                      role="tab"
-                      aria-selected={aboutTab === tab.id}
-                      aria-controls={tab.panelId}
-                      onClick={() => setAboutTab(tab.id)}
-                      className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors duration-300 ${
-                        aboutTab === tab.id ? "bg-[#f0c276] text-[#20180e] shadow-sm" : "text-[#f6f1e9]/58 hover:text-[#f6f1e9]"
-                      }`}
-                    >
-                      {tab.label}
-                    </button>
+            </div>
+            <h1 id="intro-heading">
+              Software engineer. <br />
+              <span>
+                AI & backend <br />
+                systems.
+              </span>
+            </h1>
+            <p className="editorial-intro-copy">
+              I build the systems behind the interface: APIs, databases, and AI
+              tools that turn complex problems into useful software.
+            </p>
+            <div className="editorial-intro-actions">
+              <Link href="/projects" className="button-primary">
+                View all projects <ArrowUpRight size={16} aria-hidden="true" />
+              </Link>
+              <a
+                href={links.cv || "/contact"}
+                target={links.cv ? "_blank" : undefined}
+                rel={links.cv ? "noreferrer" : undefined}
+                className="editorial-link"
+              >
+                <FileText size={16} aria-hidden="true" />
+                {links.cv ? "View résumé" : "Request résumé"}
+              </a>
+            </div>
+            <div className="editorial-current">
+              <span className="editorial-label">Currently</span>
+              <p>
+                {initialExperience.role}
+                <br />
+                <a
+                  href={initialExperience.companyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {initialExperience.company}
+                </a>
+              </p>
+              <span className="editorial-caption">
+                NestJS · PostgreSQL · AWS
+              </span>
+            </div>
+            <div className="editorial-socials">
+              {links.github && (
+                <a href={links.github} target="_blank" rel="noreferrer">
+                  <Github size={15} aria-hidden="true" />
+                  GitHub <ArrowUpRight size={13} aria-hidden="true" />
+                </a>
+              )}
+              {links.linkedin && (
+                <a href={links.linkedin} target="_blank" rel="noreferrer">
+                  <Linkedin size={15} aria-hidden="true" />
+                  LinkedIn <ArrowUpRight size={13} aria-hidden="true" />
+                </a>
+              )}
+              <Link href="/contact">
+                Get in touch <ArrowUpRight size={13} aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+          <section
+            id="projects"
+            className="editorial-selected"
+            aria-labelledby="work-heading"
+          >
+            <h2 id="work-heading" className="sr-only">
+              Selected projects
+            </h2>
+            <p className="editorial-project-guide" aria-hidden="true">
+              Scroll to explore{" "}
+              <span>
+                {selectedProjects.length} case
+                {selectedProjects.length === 1 ? " study" : " studies"}
+              </span>
+            </p>
+            {selectedProjects.length ? (
+              <ProjectShowcase projects={selectedProjects} />
+            ) : (
+              <ContentNotice type="projects" />
+            )}
+          </section>
+        </div>
+        <section
+          id="experience"
+          className="editorial-section editorial-two-column"
+          aria-labelledby="experience-heading"
+        >
+          <div>
+            <span className="editorial-label">Background</span>
+            <h2 id="experience-heading" className="editorial-heading">
+              The work <br />
+              behind the work.
+            </h2>
+            <p className="editorial-section-copy">
+              From Python projects to production services. A few places where
+              I’ve put the tools into practice.
+            </p>
+            <div className="editorial-education">
+              <span className="editorial-education-label">
+                <GraduationCap size={15} aria-hidden="true" />
+                <span className="editorial-label">Education</span>
+              </span>
+              <p>
+                BS Software Engineering
+                <br />
+                <a href={universityUrl} target="_blank" rel="noreferrer">
+                  UET Taxila
+                </a>{" "}
+                · 2026
+              </p>
+              <span className="editorial-caption">CGPA 3.51 / 4.00</span>
+            </div>
+          </div>
+          <ExperienceTimeline />
+        </section>
+        <section
+          id="skills"
+          className="editorial-section editorial-capability-section"
+          aria-labelledby="skills-heading"
+        >
+          {skillRows.length > 0 && <TechnologyMarquee rows={skillRows} />}
+          <div className="capability-layout">
+            <div className="editorial-section-intro editorial-capabilities-intro">
+              <span className="editorial-label">Capabilities</span>
+              <h2 id="skills-heading" className="editorial-heading">
+                A toolkit. <br />
+                Put to work.
+              </h2>
+              <p className="editorial-section-copy">
+                Systems that ship. AI that stays useful.
+              </p>
+              <Link href="/skills" className="editorial-link">
+                All technical skills{" "}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+            <div className="editorial-capabilities">
+              <div className="capability-card-grid">
+                <article className="capability-card">
+                  <div className="capability-card-header">
+                    <span className="capability-icon" aria-hidden="true">
+                      <Database size={20} />
+                    </span>
+                    <span className="capability-kicker">Backend systems</span>
+                  </div>
+                  <h3>Services that hold up in production.</h3>
+                  <a
+                    href={initialExperience.companyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="capability-proof"
+                  >
+                    Endpoint Clients · production systems
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </a>
+                </article>
+                <article className="capability-card">
+                  <div className="capability-card-header">
+                    <span className="capability-icon" aria-hidden="true">
+                      <Bot size={20} />
+                    </span>
+                    <span className="capability-kicker">Applied AI</span>
+                  </div>
+                  <h3>AI workflows people can trust.</h3>
+                  <Link
+                    href="/projects/ai-rag-system"
+                    className="capability-proof"
+                  >
+                    AI RAG System · case study
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </Link>
+                </article>
+                <article className="capability-card">
+                  <div className="capability-card-header">
+                    <span className="capability-icon" aria-hidden="true">
+                      <Cloud size={20} />
+                    </span>
+                    <span className="capability-kicker">
+                      Delivery & infrastructure
+                    </span>
+                  </div>
+                  <h3>From deployment to edge device.</h3>
+                  <Link
+                    href="/projects/faceme-sdk-integration-backend"
+                    className="capability-proof"
+                  >
+                    FaceMe SDK Integration · case study
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </Link>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section
+          id="blog"
+          className="editorial-section editorial-blog editorial-blog-section"
+          aria-labelledby="writing-heading"
+        >
+          <div className="editorial-blog-heading">
+            <div>
+              <span className="editorial-label">Field notes</span>
+              <h2 id="writing-heading" className="editorial-heading">
+                From the build process.
+              </h2>
+            </div>
+            <Link href="/blog" className="editorial-link">
+              All writing <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+          {blogPosts.length ? (
+            <div
+              className={`editorial-blog-grid ${blogPosts.length > 1 ? "has-rail" : ""}`}
+            >
+              <BlogStory post={blogPosts[0]} featured />
+              {blogPosts.length > 1 && (
+                <div className="editorial-blog-rail">
+                  {blogPosts.slice(1, 3).map(post => (
+                    <BlogStory key={post.slug} post={post} />
                   ))}
                 </div>
-
-                <AboutPanelShell aboutTab={aboutTab} />
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="projects" className="relative overflow-hidden border-y border-white/[0.07] bg-[#0d1014]">
-          <div className="nightfall-grid pointer-events-none absolute inset-0 opacity-35" aria-hidden="true" />
-          <div className="container relative py-16 sm:py-24">
-            <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-              <SectionHeading
-                eyebrow="Selected work"
-                title="Systems worth opening up."
-                body="A handful of projects that had to actually work in production, not just run on my machine."
-              />
-              <Link href="/projects" className="button-secondary hidden shrink-0 sm:inline-flex">
-                View all projects <ArrowUpRight size={16} />
-              </Link>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {projects.length ? (
-                projects.slice(0, 3).map((project) => <ProjectCard key={project.slug} project={project} />)
-              ) : (
-                <div className="md:col-span-2 xl:col-span-3">
-                  <ContentNotice type="featured projects" />
-                </div>
               )}
             </div>
-            <Link href="/projects" className="button-secondary mt-7 w-full sm:hidden">
-              View all projects <ArrowUpRight size={16} />
-            </Link>
-          </div>
+          ) : (
+            <ContentNotice type="articles" />
+          )}
         </section>
-
-        <section id="skills" className="container py-16 sm:py-24">
-          <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr]">
-            <div>
-              <SectionHeading
-                eyebrow="Skills"
-                title="What I actually work with."
-                body="A skill only matters for what it lets me build. Here's the toolkit behind everything on this site."
-              />
-              <Link href="/skills" className="button-secondary mt-7 hidden sm:inline-flex">
-                See all skills <ArrowUpRight size={16} />
-              </Link>
-            </div>
-            <div className="border-t border-white/[0.12]">
-              {skills.length ? (
-                skills.slice(0, 5).map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="group grid grid-cols-[2.5rem_1fr] gap-3 border-b border-white/[0.08] py-5 transition sm:grid-cols-[3.5rem_1fr_1.25fr] sm:gap-5 hover:bg-white/[0.025]"
-                  >
-                    <SkillGlyph name={skill.name} category={skill.category} />
-                    <p className="text-base font-medium text-[#f6f1e9]">{skill.name}</p>
-                    <p className="col-start-2 text-sm leading-6 text-[#f6f1e9]/52 sm:col-start-auto">
-                      {skill.note || "No specific project note yet."}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <ContentNotice type="skills" />
-              )}
-            </div>
-          </div>
-          <Link href="/skills" className="button-secondary mt-7 w-full sm:hidden">
-            See all skills <ArrowUpRight size={16} />
-          </Link>
-        </section>
-
-        <section id="blog" className="bg-[#e8dfd1] text-[#21170f]">
-          <div className="container py-16 sm:py-24">
-            <div className="flex flex-col justify-between gap-5 border-b border-[#211b14]/20 pb-8 sm:flex-row sm:items-end">
-              <div className="max-w-2xl">
-                <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#6c4d20]">Field notes</p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
-                  Notes from the build process.
-                </h2>
-                <p className="mt-4 text-base leading-7 text-[#21170f]/68">
-                  What I ran into, what broke, and what I'd do differently next time.
-                </p>
-              </div>
-              <Link
-                href="/blog"
-                className="hidden items-center gap-2 rounded-full border border-[#211b14]/25 px-5 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:border-[#211b14]/55 sm:inline-flex"
+        <section
+          id="contact"
+          className="editorial-section editorial-two-column editorial-contact"
+          aria-labelledby="contact-heading"
+        >
+          <div>
+            <span className="editorial-label">Get in touch</span>
+            <h2 id="contact-heading" className="editorial-heading">
+              Good work starts <br />
+              with a conversation.
+            </h2>
+            <p className="editorial-section-copy">
+              Hiring for your team or have a project in mind? Tell me what
+              you’re building.
+            </p>
+            {links.email && (
+              <a
+                className="editorial-link editorial-email"
+                href={`mailto:${links.email}`}
               >
-                View all articles <ArrowUpRight size={16} />
-              </Link>
-            </div>
-            <div className="mt-2 grid lg:grid-cols-[1.2fr_.8fr]">
-              {blogPosts.length ? (
-                blogPosts.slice(0, 2).map((post, index) => <EditorialPost key={post.slug} post={post} index={index} />)
-              ) : (
-                <div className="py-8 lg:col-span-2">
-                  <ContentNotice type="blog posts" />
-                </div>
-              )}
-            </div>
+                {links.email}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            )}
             <Link
-              href="/blog"
-              className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#211b14]/25 px-5 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:border-[#211b14]/55 sm:hidden"
+              href="/contact"
+              className="editorial-link editorial-link-muted"
             >
-              View all articles <ArrowUpRight size={16} />
+              More ways to connect <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
-        </section>
-
-        <TestimonialsSection />
-
-        <section id="contact" className="container py-16 sm:py-24">
-          <div className="surface-card grid gap-8 overflow-hidden p-6 sm:gap-10 sm:p-10 lg:grid-cols-[.82fr_1.18fr]">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#f0c276]">Contact</p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-[#f6f1e9] sm:text-4xl">
-                Got something on your mind? Send a message.
-              </h2>
-              <p className="mt-4 text-base leading-7 text-[#f6f1e9]/62">
-                Send a short note and it comes straight to me. If you'd rather use WhatsApp, email, LinkedIn, or GitHub, those are all on the contact page too.
-              </p>
-              <Link
-                href="/contact"
-                className="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-[#f0c276] transition hover:text-[#ffe0a5]"
-              >
-                View contact details <ArrowUpRight size={15} />
-              </Link>
-            </div>
-            <ContactForm />
-          </div>
+          <ContactForm />
         </section>
       </main>
     </SiteFrame>

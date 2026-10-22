@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/AppProviders";
+import { getPublicLinks } from "@/lib/publicLinks";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -19,13 +20,13 @@ export const viewport: Viewport = {
   themeColor: "#100e0b",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://awaisnazir.tech"),
   title: {
-    default: "Awais Nazir | Software Engineer, AI Engineer & Web Developer in Islamabad",
+    default:
+      "Awais Nazir | Software Engineer, AI Engineer & Web Developer in Islamabad",
     template: "%s | Awais Nazir",
   },
   description:
@@ -103,7 +104,10 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${manrope.variable} ${spaceMono.variable} dark`}>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${spaceMono.variable} dark`}
+    >
       <head>
         <script
           type="application/ld+json"
@@ -111,7 +115,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#100e0b] text-foreground font-sans">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders publicLinks={getPublicLinks()}>{children}</AppProviders>
       </body>
     </html>
   );

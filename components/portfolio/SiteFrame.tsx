@@ -1,267 +1,161 @@
 "use client";
 
-import { Github, Linkedin, Mail, Menu, MessageCircle, X } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { portraitObjectPosition } from "@/lib/homeInteractions";
-import { FeedbackAction } from "./FeedbackAction";
+import { usePublicLinks } from "@/contexts/PublicLinksContext";
 
-const navItems = ["Home", "Projects", "Skills", "Blog", "Contact"] as const;
-const pageFor = (item: (typeof navItems)[number]) => (item === "Home" ? "/" : `/${item.toLowerCase()}`);
+const navItems = [
+  { label: "Work", href: "/projects" },
+  { label: "Skills", href: "/skills" },
+  { label: "Writing", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
 
 export function SiteFrame({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname() || "/";
+  const links = usePublicLinks();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!menuOpen) return;
+    function keydown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuRef.current?.focus();
+      }
+    }
+    function pointerdown(event: PointerEvent) {
+      if (!headerRef.current?.contains(event.target as Node))
+        setMenuOpen(false);
+    }
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("pointerdown", pointerdown);
+    return () => {
+      document.removeEventListener("keydown", keydown);
+      document.removeEventListener("pointerdown", pointerdown);
+    };
+  }, [menuOpen]);
 
-  const isItemActive = (item: (typeof navItems)[number]) => {
-    const target = pageFor(item);
-    if (target === "/") return pathname === "/";
-    return pathname.startsWith(target);
-  };
-
-  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || process.env.VITE_CONTACT_EMAIL;
-  const github = process.env.NEXT_PUBLIC_GITHUB_URL || process.env.VITE_GITHUB_URL;
-  const linkedin = process.env.NEXT_PUBLIC_LINKEDIN_URL || process.env.VITE_LINKEDIN_URL;
-  const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_URL || process.env.VITE_WHATSAPP_URL;
-  const portrait = "/images/img2.png";
-  const isProjectDetail = /^\/projects\/[^/]+$/.test(pathname);
-  const floatingWhatsAppAction =
-    whatsapp && pathname !== "/contact" ? (
-      <FeedbackAction
-        href={whatsapp}
-        target="_blank"
-        rel="noreferrer"
-        className={`floating-whatsapp ${isProjectDetail ? "floating-whatsapp--above-project-dock" : ""} fixed bottom-6 right-5 z-[100] grid size-12 place-items-center rounded-full p-0 shadow-[0_14px_34px_rgba(0,0,0,.38)] lg:hidden`}
-        aria-label="Let’s Talk on WhatsApp"
-        data-testid="floating-whatsapp"
+  const renderLinks = () =>
+    navItems.map(item => (
+      <Link
+        key={item.href}
+        href={item.href}
+        aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+        onClick={() => setMenuOpen(false)}
       >
-        <MessageCircle size={21} />
-      </FeedbackAction>
-    ) : null;
+        {item.label}
+      </Link>
+    ));
 
   return (
-    <>
-      <div className="relative min-h-screen overflow-x-clip bg-[#100e0b] text-[#f6f1e9]">
-        <div
-          className="pointer-events-none absolute inset-0 blur-[25px] md:blur-[36px]"
-          style={{
-            background:
-              "radial-gradient(85% 55% at 52% 0%, rgba(35,70,105,0.34) 0%, rgba(24,49,74,0.18) 38%, transparent 76%)",
-            mixBlendMode: "screen",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-0 blur-[25px] opacity-90 md:blur-[36px]"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(54,88,120,0.16) 0%, transparent 45%, rgba(0,0,0,0.18) 100%)",
-            mixBlendMode: "soft-light",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-0 blur-[25px] md:blur-[36px]"
-          style={{
-            background: "radial-gradient(42% 35% at 78% 16%, rgba(96,130,155,0.16) 0%, transparent 78%)",
-            mixBlendMode: "screen",
-          }}
-          aria-hidden="true"
-        />
-        <div className="nightfall-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-
-        <div className="relative z-[1] pt-20">
-          <header className="fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-5">
-            <div className="mx-auto flex h-[62px] max-w-6xl items-center justify-between gap-3 rounded-2xl border border-white/[0.12] bg-[#17130f]/72 px-3 shadow-[0_18px_42px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:px-4">
-              <Link href="/" className="flex min-w-0 items-center gap-2.5" aria-label="Awais Nazir home">
-                <span className="grid size-8 shrink-0 overflow-hidden rounded-full border border-[#f0c276]/45 bg-[#f0c276]/10">
-                  <img
-                    src={portrait}
-                    alt=""
-                    className="size-full object-cover"
-                    style={{ objectPosition: portraitObjectPosition }}
-                  />
-                </span>
-                <span className="truncate text-xs font-medium tracking-[-0.02em] text-[#f6f1e9] sm:text-sm">
-                  Awais Nazir
-                </span>
-              </Link>
-              <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary navigation">
-                {navItems.map((item) => {
-                  const active = isItemActive(item);
-                  return (
-                    <Link
-                      key={item}
-                      href={pageFor(item)}
-                      className={`relative py-1 text-sm transition-colors duration-200 ${
-                        active ? "text-[#f0c276] font-medium" : "text-[#f6f1e9]/70 hover:text-[#f0c276]"
-                      }`}
-                    >
-                      {item}
-                      {active && (
-                        <span className="absolute inset-x-0 -bottom-1 h-[2px] bg-[#f0c276] rounded-full shadow-[0_0_8px_rgba(240,194,118,0.6)]" />
-                      )}
-                    </Link>
-                  );
-                })}
-                <FeedbackAction
-                  href={whatsapp ?? "/contact"}
-                  target={whatsapp ? "_blank" : undefined}
-                  rel={whatsapp ? "noreferrer" : undefined}
-                >
-                  <MessageCircle size={14} /> Let&apos;s Talk
-                </FeedbackAction>
-              </nav>
-              <button
-                className="nav-icon-button mobile-menu-trigger lg:hidden"
-                type="button"
-                onClick={() => setMenuOpen((open) => !open)}
-                aria-expanded={menuOpen}
-                aria-controls="mobile-navigation"
-                aria-label="Toggle navigation menu"
-              >
-                {menuOpen ? <X size={18} /> : <Menu size={18} />}
-              </button>
-            </div>
-            <div
-              className={`mx-auto grid max-w-6xl transition-[grid-template-rows,opacity,margin,transform] duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] lg:hidden ${
-                menuOpen ? "mt-2 translate-y-0 grid-rows-[1fr] opacity-100" : "-translate-y-1 grid-rows-[0fr] opacity-0"
-              }`}
+    <div className="editorial-site">
+      <a className="editorial-skip" href="#site-content">
+        Skip to content
+      </a>
+      <header className="editorial-header" ref={headerRef}>
+        <div className="editorial-container editorial-header-inner">
+          <Link
+            href="/"
+            className="editorial-brand"
+            aria-label="Awais Nazir home"
+          >
+            <span aria-hidden="true">
+              an<span className="editorial-brand-dot">.</span>
+            </span>
+            <span>
+              Awais Nazir
+              <span className="editorial-brand-caption">SOFTWARE ENGINEER</span>
+            </span>
+          </Link>
+          <nav
+            className="editorial-desktop-nav"
+            aria-label="Primary navigation"
+          >
+            {renderLinks()}
+            <a
+              href={links.cv || "/contact"}
+              target={links.cv ? "_blank" : undefined}
+              rel={links.cv ? "noreferrer" : undefined}
+              className="editorial-nav-resume"
             >
-              <nav
-                id="mobile-navigation"
-                className="min-h-0 overflow-hidden"
-                aria-label="Mobile navigation"
-                aria-hidden={!menuOpen}
-              >
-                <div className="rounded-2xl border border-white/[0.1] bg-[#17130f]/95 p-3 shadow-2xl backdrop-blur-2xl">
-                  <div className="flex flex-col gap-1">
-                    {navItems.map((item) => {
-                      const active = isItemActive(item);
-                      return (
-                        <Link
-                          key={item}
-                          href={pageFor(item)}
-                          tabIndex={menuOpen ? 0 : -1}
-                          onClick={() => setMenuOpen(false)}
-                          className={`rounded-lg px-3 py-3 text-sm transition-colors flex items-center justify-between ${
-                            active
-                              ? "bg-white/[0.08] text-[#f0c276] font-medium"
-                              : "text-[#f6f1e9]/80 hover:bg-white/[0.05] hover:text-[#f0c276]"
-                          }`}
-                        >
-                          <span>{item}</span>
-                          {active && (
-                            <span className="size-1.5 rounded-full bg-[#f0c276] shadow-[0_0_6px_#f0c276]" />
-                          )}
-                        </Link>
-                      );
-                    })}
-                    <FeedbackAction
-                      href={whatsapp ?? "/contact"}
-                      target={whatsapp ? "_blank" : undefined}
-                      rel={whatsapp ? "noreferrer" : undefined}
-                      tabIndex={menuOpen ? 0 : -1}
-                      onClick={() => setMenuOpen(false)}
-                      className="mt-1 justify-center rounded-lg px-3 py-3 text-sm"
-                    >
-                      <MessageCircle size={15} /> Let&apos;s Talk on WhatsApp
-                    </FeedbackAction>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </header>
-
-          {children}
-
-          <footer className="border-t border-white/[0.08] bg-black/10">
-            <div className="container grid gap-10 py-12 md:grid-cols-[1.3fr_1fr_1fr]">
-              <div>
-                <p className="font-mono text-sm tracking-[0.12em] text-[#f0c276]">AWAIS NAZIR</p>
-                <p className="mt-3 max-w-sm text-sm leading-6 text-[#f6f1e9]/58">
-                  Backend systems and AI integration, built for products that need to actually work.
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#f6f1e9]/45">Navigate</p>
-                <div className="mt-4 flex flex-col gap-2.5">
-                  {navItems.map((item) => {
-                    const active = isItemActive(item);
-                    return (
-                      <Link
-                        key={item}
-                        href={pageFor(item)}
-                        className={`w-fit text-sm transition ${
-                          active ? "text-[#f0c276] font-medium" : "text-[#f6f1e9]/70 hover:text-[#f0c276]"
-                        }`}
-                      >
-                        {item}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#f6f1e9]/45">Connect</p>
-                <div className="mt-4 flex flex-col items-start gap-2.5 text-sm">
-                  {email && (
-                    <a className="inline-flex items-center gap-2 text-[#f6f1e9]/70 transition hover:text-[#f0c276]" href={`mailto:${email}`}>
-                      <Mail size={15} /> {email}
-                    </a>
-                  )}
-                  {whatsapp && (
-                    <a
-                      className="inline-flex items-center gap-2 text-[#f6f1e9]/70 transition hover:text-[#f0c276]"
-                      href={whatsapp}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <MessageCircle size={15} /> WhatsApp
-                    </a>
-                  )}
-                  {github && (
-                    <a
-                      className="inline-flex items-center gap-2 text-[#f6f1e9]/70 transition hover:text-[#f0c276]"
-                      href={github}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Github size={15} /> GitHub
-                    </a>
-                  )}
-                  {linkedin && (
-                    <a
-                      className="inline-flex items-center gap-2 text-[#f6f1e9]/70 transition hover:text-[#f0c276]"
-                      href={linkedin}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Linkedin size={15} /> LinkedIn
-                    </a>
-                  )}
-                  {!email && !whatsapp && !github && !linkedin && (
-                    <Link className="inline-flex items-center gap-2 text-[#f6f1e9]/70 transition hover:text-[#f0c276]" href="/contact">
-                      <Mail size={15} /> Contact
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="container border-t border-white/[0.08] py-5 text-xs text-[#f6f1e9]/40">
-              © {new Date().getFullYear()} Awais Nazir. All rights reserved.
-            </div>
-          </footer>
+              {links.cv ? "Résumé" : "Request résumé"}
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
+          </nav>
+          <button
+            ref={menuRef}
+            type="button"
+            className="editorial-menu-button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={
+              menuOpen ? "Close navigation menu" : "Open navigation menu"
+            }
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={21} /> : <Menu size={21} />}
+          </button>
         </div>
+        {menuOpen && (
+          <nav
+            className="editorial-mobile-nav editorial-container"
+            id="mobile-navigation"
+            aria-label="Mobile navigation"
+          >
+            {renderLinks()}
+            <a
+              href={links.cv || "/contact"}
+              target={links.cv ? "_blank" : undefined}
+              rel={links.cv ? "noreferrer" : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
+              {links.cv ? "View résumé ↗" : "Request résumé"}
+            </a>
+            <a
+              href={links.whatsapp || "/contact"}
+              target={links.whatsapp ? "_blank" : undefined}
+              rel={links.whatsapp ? "noreferrer" : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
+              {links.whatsapp ? "Talk on WhatsApp ↗" : "Get in touch"}
+            </a>
+          </nav>
+        )}
+      </header>
+      <div id="site-content" tabIndex={-1}>
+        {children}
       </div>
-      {mounted && floatingWhatsAppAction && createPortal(floatingWhatsAppAction, document.body)}
-    </>
+      <footer className="editorial-footer editorial-container">
+        <div>
+          <Link href="/" className="editorial-footer-name">
+            Awais Nazir<span> / Software engineer</span>
+          </Link>
+          <p>AI & backend systems. Islamabad, Pakistan.</p>
+        </div>
+        <div className="editorial-footer-links">
+          {links.github && (
+            <a href={links.github} target="_blank" rel="noreferrer">
+              GitHub ↗
+            </a>
+          )}
+          {links.linkedin && (
+            <a href={links.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn ↗
+            </a>
+          )}
+          <a href={links.email ? `mailto:${links.email}` : "/contact"}>
+            {links.email ? "Email ↗" : "Contact ↗"}
+          </a>
+        </div>
+        <span className="editorial-copyright">
+          © {new Date().getFullYear()} Awais Nazir
+        </span>
+      </footer>
+    </div>
   );
 }

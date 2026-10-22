@@ -7,6 +7,7 @@ import type { BlogPost, Project, Skill } from "@/lib/portfolio";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { shouldClosePreviewOnKey } from "@/lib/portfolioInteractions";
+import { displayTechnology, skillDescription } from "@/lib/editorial";
 
 export function SectionHeading({ eyebrow, title, body }: { eyebrow: string; title: string; body?: string }) {
   return (
@@ -156,8 +157,8 @@ export function SkillItem({ skill }: { skill: Skill }) {
         <Terminal size={10} />
       </span>
       <div>
-        <p className="text-sm font-medium text-[#f6f1e9]">{skill.name}</p>
-        {skill.note && <p className="mt-1 text-sm leading-5 text-[#f6f1e9]/55">{skill.note}</p>}
+        <p className="text-sm font-medium text-[#f6f1e9]">{displayTechnology(skill.name)}</p>
+        {skillDescription(skill.name, skill.note) && <p className="mt-1 text-sm leading-6 text-[#c8c2b8]">{skillDescription(skill.name, skill.note)}</p>}
       </div>
     </li>
   );
