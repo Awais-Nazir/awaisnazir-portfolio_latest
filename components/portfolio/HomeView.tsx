@@ -182,7 +182,6 @@ export function HomeView({
   skills: Skill[];
   blogPosts: BlogPost[];
 }) {
-  const cvUrl = process.env.NEXT_PUBLIC_CV_URL || process.env.VITE_CV_URL;
   const [aboutTab, setAboutTab] = useState<AboutTabId>(defaultAboutTab);
 
   return (
@@ -207,15 +206,15 @@ export function HomeView({
               <a href="#projects" className="button-primary">
                 View Projects <ArrowUpRight size={16} />
               </a>
-              {cvUrl ? (
-                <a href={cvUrl} className="button-secondary" target="_blank" rel="noreferrer">
-                  Download CV <ArrowDownToLine size={16} />
-                </a>
-              ) : (
-                <a href="#contact" className="button-secondary" aria-label="Download CV—contact Awais Nazir to request it">
-                  Download CV <ArrowDownToLine size={16} />
-                </a>
-              )}
+              <a
+                href="/resume-Awais-Nazir.pdf"
+                className="button-secondary"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open Awais Nazir CV in a new tab"
+              >
+                View CV <ArrowDownToLine size={16} />
+              </a>
             </div>
           </div>
           <ProgrammingScene />
