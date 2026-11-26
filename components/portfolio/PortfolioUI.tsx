@@ -79,9 +79,9 @@ export function ProjectCard({ project }: { project: Project }) {
         aria-label={`View ${project.title} project details`}
       />
       <div className="pointer-events-none relative z-10 flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="text-xl font-medium tracking-[-0.03em] text-[#f6f1e9]">{project.title}</h3>
-        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#f6f1e9]/58">{project.summary}</p>
-        <div className="mt-5 flex flex-wrap gap-1.5">
+        <h3 className="text-xl font-medium leading-7 tracking-[-0.03em] text-[#f6f1e9] md:min-h-14">{project.title}</h3>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#f6f1e9]/58 md:min-h-12">{project.summary}</p>
+        <div className="mt-5 flex flex-wrap gap-1.5 md:mb-6">
           {project.techStack.slice(0, 4).map((tech) => (
             <span
               key={tech}
@@ -91,7 +91,7 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           ))}
         </div>
-        <div className="mt-6 flex items-center justify-between border-t border-white/[0.08] pt-4">
+        <div className="mt-6 flex items-center justify-between border-t border-white/[0.08] pt-4 md:mt-auto">
           <Link
             href={`/projects/${project.slug}`}
             className="pointer-events-auto relative z-10 inline-flex items-center gap-1.5 text-sm font-medium text-[#f0c276] transition hover:text-[#ffe0a5]"

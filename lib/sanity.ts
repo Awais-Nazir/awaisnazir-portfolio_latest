@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import type { BlogPost, Project, Skill } from "./portfolio";
+import type { BlogPost, Project, Skill, SkillGraphBuild } from "./portfolio";
 
 type RawImage = { asset?: { url?: string } };
 
@@ -166,12 +166,35 @@ export async function getAllSkills(): Promise<{ configured: boolean; skills: Ski
   if (!client) return { configured: false, skills: [] };
   try {
     const skills = await client.fetch<Skill[]>(
-      `*[_type == "skill"] | order(order asc) { name, note, category, order, showOnHome }`
+      `*[_type == "skill"] | order(order asc) { _id, name, note, category, order, showOnHome }`
     );
     return { configured: true, skills };
   } catch (error) {
     console.error("[Sanity] Failed to fetch all skills:", error);
     return { configured: false, skills: [] };
+  }
+}
+
+export async function getSkillGraphBuilds(): Promise<{ configured: boolean; builds: SkillGraphBuild[] }> {
+  const client = getClient();
+  if (!client) return { configured: false, builds: [] };
+  try {
+    const documents = await client.fetch<Array<{
+      _id: string; kind: "project" | "experience"; title: string;
+      summary?: string; slug?: string; url?: string; coverImageUrl?: string; relatedSkillIds?: Array<string | null>;
+    }>>(`*[_type in ["project", "experience"]] | order(order asc, title asc) {
+      _id, "kind": _type, title, summary, "slug": slug.current, url,
+      "coverImageUrl": coverImage.asset->url,
+      "relatedSkillIds": relatedSkills[]->._id
+    }`);
+    return { configured: true, builds: documents.map(d => ({
+      _id: d._id, kind: d.kind, title: d.title, summary: d.summary, coverImageUrl: externalUrl(d.coverImageUrl),
+      href: d.kind === "project" ? (d.slug ? `/projects/${encodeURIComponent(d.slug)}` : undefined) : externalUrl(d.url),
+      relatedSkillIds: [...new Set((d.relatedSkillIds || []).filter((id): id is string => typeof id === "string"))],
+    })) };
+  } catch (error) {
+    console.error("[Sanity] Failed to fetch skill relationships:", error);
+    return { configured: false, builds: [] };
   }
 }
 

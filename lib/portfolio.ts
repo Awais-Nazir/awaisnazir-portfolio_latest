@@ -19,11 +19,22 @@ export type Project = {
 };
 
 export type Skill = {
+  _id?: string;
   name: string;
   note?: string;
   category?: string;
   order: number;
   showOnHome: boolean;
+};
+
+export type SkillGraphBuild = {
+  coverImageUrl?: string;
+  _id: string;
+  title: string;
+  kind: "project" | "experience";
+  summary?: string;
+  href?: string;
+  relatedSkillIds: string[];
 };
 
 export type BlogPost = {
