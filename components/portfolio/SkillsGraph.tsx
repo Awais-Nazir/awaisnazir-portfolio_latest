@@ -60,7 +60,7 @@ export function SkillsGraph({ skills, projects }: { skills: Skill[]; projects: B
         const matches=(items as typeof graph.nodes).filter(n=>n.name.toLowerCase().includes(query.toLowerCase().trim()));
         return matches.length ? <div key={name as string}><h3>{name as string}</h3><div className="mobile-skill-pills">{matches.map(n=>{
           const connections=graph.nodes.filter(other=>other.id!==n.id&&connected(other.id,n.id));
-          return <details key={n.id} className="mobile-skill-detail"><summary>{n.name}</summary><div className="mobile-skill-content">
+          return <details key={n.id} name="mobile-skills" className="mobile-skill-detail"><summary>{n.name}</summary><div className="mobile-skill-content">
             {n.build?.coverImageUrl&&<img src={n.build.coverImageUrl} alt="" className="network-preview-image"/>}
             {(n.skill?.note||n.build?.summary)&&<p>{n.skill?.note||n.build?.summary}</p>}
             <p className="mobile-connection-label">{n.build?"Skills used":"Related work"} · {connections.length}</p>
