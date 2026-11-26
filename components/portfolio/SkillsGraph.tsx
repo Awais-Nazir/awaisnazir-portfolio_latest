@@ -55,8 +55,8 @@ export function SkillsGraph({ skills, projects }: { skills: Skill[]; projects: B
       <aside className="network-inspector" aria-live="polite">{current ? <><span className="network-tag">{current.build && (current.build.kind === "experience" ? <Building2 size={14} aria-hidden="true"/> : <PanelsTopLeft size={14} aria-hidden="true"/>)}{current.build?(current.build.kind === "experience" ? "Job / experience" : "Project"):current.skill?.category||"Skill"}</span><h2>{current.name}</h2>{(current.skill?.note || current.build?.summary)&&<p>{current.skill?.note || current.build?.summary}</p>}<h3>{current.build?`Connected skills · ${related.length}`:`Related work · ${related.length}`}</h3><div className="network-pills inspector-connections">{related.map(n=><span className="network-detail-pill" key={n.id}>{n.name}</span>)}</div>{!related.length&&<p>No related work has been linked yet.</p>}{current.build?.href&&<Link href={current.build.href} target={current.build.kind === "experience" ? "_blank" : undefined} rel={current.build.kind === "experience" ? "noopener noreferrer" : undefined} className="network-case">{current.build.kind === "experience" ? "Visit organization" : "Explore this project"} <ArrowUpRight size={16}/></Link>}</>:<div className="network-inspector-empty"><span className="network-tag">Explore the connections</span><h2>Hover to explore</h2><p>Hover over a project, job, or skill to view its details.</p></div>}</aside>
     </div>
     <section className="network-mobile-index" aria-label="Skills and related work">
-      <div className="network-index-heading"><div><h2>Every tool. Every connection.</h2><p>Tap a project, role, or skill to see its details.</p></div><input aria-label="Search skills and projects" placeholder="Find a skill or project…" value={query} onChange={e=>setQuery(e.target.value)}/></div>
-      <div className="network-index-grid">{[["Projects",graph.nodes.filter(n=>n.build?.kind === "project")],["Experience",graph.nodes.filter(n=>n.build?.kind === "experience")],...groups.map(([c])=>[c,graph.nodes.filter(n=>n.skill&&(n.skill.category?.trim()||"Skills")===c)] as const)].map(([name,items])=>{
+      <div className="network-index-heading"><div><h2>Every tool. Every connection.</h2><p>Tap a skill to see where I’ve used it.</p></div><input aria-label="Search skills" placeholder="Find a skill…" value={query} onChange={e=>setQuery(e.target.value)}/></div>
+      <div className="network-index-grid">{[...groups.map(([c])=>[c,graph.nodes.filter(n=>n.skill&&(n.skill.category?.trim()||"Skills")===c)] as const)].map(([name,items])=>{
         const matches=(items as typeof graph.nodes).filter(n=>n.name.toLowerCase().includes(query.toLowerCase().trim()));
         return matches.length ? <div key={name as string}><h3>{name as string}</h3><div className="mobile-skill-pills">{matches.map(n=>{
           const connections=graph.nodes.filter(other=>other.id!==n.id&&connected(other.id,n.id));
@@ -69,7 +69,7 @@ export function SkillsGraph({ skills, projects }: { skills: Skill[]; projects: B
           </div></details>;
         })}</div></div> : null;
       })}</div>
-      {!graph.nodes.some(n=>n.name.toLowerCase().includes(query.toLowerCase().trim()))&&<p>No matches. Try a different name.</p>}
+      {!graph.nodes.some(n=>n.skill&&n.name.toLowerCase().includes(query.toLowerCase().trim()))&&<p>No matches. Try a different name.</p>}
     </section>
     {/* Lower skills index and hover previews temporarily disabled; preserved for reuse.
     <section className="network-index"><div className="network-index-heading"><div><h2>Every tool. Every connection.</h2><p>Hover over a project, role, or skill for a closer look.</p></div><input aria-label="Search skills and projects" placeholder="Find a skill or project…" value={query} onChange={e=>setQuery(e.target.value)} /></div>
