@@ -112,6 +112,11 @@ export default function RootLayout({
       </head>
       <body className="bg-[#100e0b] text-foreground font-sans">
         <AppProviders>{children}</AppProviders>
+        <script
+          src="http://localhost:3001/folio-widget.js"
+          data-folio-bot="0adadab5-799e-4fec-8734-d2f7f8448690"
+          defer
+        />
       </body>
     </html>
   );
